@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.chanhu.mapper.ProcessClientDepartmentMapper">
+    
+    <resultMap type="ProcessClientDepartment" id="ProcessClientDepartmentResult">
+        <result property="id"    column="id"    />
+        <result property="departmentName"    column="department_name"    />
+        <result property="clientUnitId"    column="client_unit_id"    />
+        <result property="contactsName"    column="contacts_name"    />
+        <result property="contactsMobile"    column="contacts_mobile"    />
+        <result property="duties"    column="duties"    />
+        <result property="comments"    column="comments"    />
+    </resultMap>
+
+    <sql id="selectProcessClientDepartmentVo">
+        select id, department_name, client_unit_id, contacts_name, contacts_mobile, duties, comments from process_client_department
+    </sql>
+
+    <select id="selectProcessClientDepartmentList" parameterType="ProcessClientDepartment" resultMap="ProcessClientDepartmentResult">
+        <include refid="selectProcessClientDepartmentVo"/>
+        <where>  
+            <if test="departmentName != null  and departmentName != ''"> and department_name like concat('%', #{departmentName}, '%')</if>
+            <if test="clientUnitId != null "> and client_unit_id = #{clientUnitId}</if>
+            <if test="contactsName != null  and contactsName != ''"> and contacts_name like concat('%', #{contactsName}, '%')</if>
+            <if test="contactsMobile != null  and contactsMobile != ''"> and contacts_mobile like concat('%', #{contactsMobile}, '%')</if>
+            <if test="duties != null  and duties != ''"> and duties like concat('%', #{duties}, '%')</if>
+            <if test="comments != null  and comments != ''"> and comments like concat('%', #{comments}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectProcessClientDepartmentById" parameterType="Long" resultMap="ProcessClientDepartmentResult">
+        <include refid="selectProcessClientDepartmentVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertProcessClientDepartment" parameterType="ProcessClientDepartment" useGeneratedKeys="true" keyProperty="id">
+        insert into process_client_department
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="departmentName != null">department_name,</if>
+            <if test="clientUnitId != null">client_unit_id,</if>
+            <if test="contactsName != null">contacts_name,</if>
+            <if test="contactsMobile != null">contacts_mobile,</if>
+            <if test="duties != null">duties,</if>
+            <if test="comments != null">comments,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="departmentName != null">#{departmentName},</if>
+            <if test="clientUnitId != null">#{clientUnitId},</if>
+            <if test="contactsName != null">#{contactsName},</if>
+            <if test="contactsMobile != null">#{contactsMobile},</if>
+            <if test="duties != null">#{duties},</if>
+            <if test="comments != null">#{comments},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProcessClientDepartment" parameterType="ProcessClientDepartment">
+        update process_client_department
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="departmentName != null">department_name = #{departmentName},</if>
+            <if test="clientUnitId != null">client_unit_id = #{clientUnitId},</if>
+            <if test="contactsName != null">contacts_name = #{contactsName},</if>
+            <if test="contactsMobile != null">contacts_mobile = #{contactsMobile},</if>
+            <if test="duties != null">duties = #{duties},</if>
+            <if test="comments != null">comments = #{comments},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProcessClientDepartmentById" parameterType="Long">
+        delete from process_client_department where id = #{id}
+    </delete>
+
+    <delete id="deleteProcessClientDepartmentByIds" parameterType="String">
+        delete from process_client_department where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
