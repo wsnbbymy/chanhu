@@ -2,6 +2,8 @@ package com.ruoyi.chanhu.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.chanhu.domain.dto.ProcessClientInfoDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +44,8 @@ public class ProcessClientInfoController extends BaseController
     public TableDataInfo list(ProcessClientInfo processClientInfo)
     {
         startPage();
-        List<ProcessClientInfo> list = processClientInfoService.selectProcessClientInfoList(processClientInfo);
+//        List<ProcessClientInfo> list = processClientInfoService.selectProcessClientInfoList(processClientInfo);
+        List<ProcessClientInfoDto> list = processClientInfoService.selectProcessClientInfoListAndDepartments(processClientInfo);
         return getDataTable(list);
     }
 

@@ -2,6 +2,7 @@ package com.ruoyi.chanhu.service;
 
 import java.util.List;
 import com.ruoyi.chanhu.domain.ProcessClientInfo;
+import com.ruoyi.chanhu.domain.dto.ProcessClientInfoDto;
 
 /**
  * 客户信息Service接口
@@ -58,4 +59,9 @@ public interface IProcessClientInfoService
      * @return 结果
      */
     public int deleteProcessClientInfoById(Long id);
+
+    /**
+     * 查询客户列表，带下属部门
+     */
+    public List<ProcessClientInfoDto> selectProcessClientInfoListAndDepartments(ProcessClientInfo processClientInfo);
 }

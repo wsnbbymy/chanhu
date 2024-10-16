@@ -1,6 +1,12 @@
 package com.ruoyi.chanhu.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.ruoyi.chanhu.domain.ProcessClientDepartment;
+import com.ruoyi.chanhu.domain.dto.ProcessClientInfoDto;
+import com.ruoyi.chanhu.service.IProcessClientDepartmentService;
+import com.ruoyi.common.utils.bean.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.chanhu.mapper.ProcessClientInfoMapper;
@@ -18,6 +24,9 @@ public class ProcessClientInfoServiceImpl implements IProcessClientInfoService
 {
     @Autowired
     private ProcessClientInfoMapper processClientInfoMapper;
+
+    @Autowired
+    private IProcessClientDepartmentService processClientDepartmentService;
 
     /**
      * 查询客户信息
@@ -90,4 +99,28 @@ public class ProcessClientInfoServiceImpl implements IProcessClientInfoService
     {
         return processClientInfoMapper.deleteProcessClientInfoById(id);
     }
+
+    /**
+     * 查询客户单位信息，带部门信息
+     * @param processClientInfo
+     * @return
+     */
+    @Override
+    public List<ProcessClientInfoDto> selectProcessClientInfoListAndDepartments(ProcessClientInfo processClientInfo) {
+        List<ProcessClientInfo> processClientInfos = processClientInfoMapper.selectProcessClientInfoList(processClientInfo);
+        List<ProcessClientInfoDto> dtos = new ArrayList<>();
+        for (ProcessClientInfo info : processClientInfos) {
+            ProcessClientInfoDto dto = new ProcessClientInfoDto();
+            Long id = info.getId();
+            ProcessClientDepartment department = new ProcessClientDepartment();
+            department.setClientUnitId(id);
+            List<ProcessClientDepartment> result = processClientDepartmentService.selectProcessClientDepartmentList(department);
+            BeanUtils.copyBeanProp(dto,info);
+            dto.setChildren(result);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
+
 }
