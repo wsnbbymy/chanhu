@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.chanhu.mapper.ProcessContractsMapper">
+    
+    <resultMap type="ProcessContracts" id="ProcessContractsResult">
+        <result property="id"    column="id"    />
+        <result property="contractType"    column="contract_type"    />
+        <result property="provider"    column="provider"    />
+        <result property="startDate"    column="start_date"    />
+        <result property="endDate"    column="end_date"    />
+        <result property="detail"    column="detail"    />
+        <result property="comments"    column="comments"    />
+        <result property="departmentId"    column="department_id"    />
+    </resultMap>
+
+    <sql id="selectProcessContractsVo">
+        select id, contract_type, provider, start_date, end_date, detail, comments, department_id from process_contracts
+    </sql>
+
+    <select id="selectProcessContractsList" parameterType="ProcessContracts" resultMap="ProcessContractsResult">
+        <include refid="selectProcessContractsVo"/>
+        <where>  
+            <if test="contractType != null "> and contract_type = #{contractType}</if>
+            <if test="provider != null "> and provider = #{provider}</if>
+            <if test="startDate != null "> and start_date = #{startDate}</if>
+            <if test="endDate != null "> and end_date = #{endDate}</if>
+            <if test="detail != null  and detail != ''"> and detail = #{detail}</if>
+            <if test="comments != null  and comments != ''"> and comments = #{comments}</if>
+            <if test="departmentId != null "> and department_id = #{departmentId}</if>
+        </where>
+    </select>
+    
+    <select id="selectProcessContractsById" parameterType="Long" resultMap="ProcessContractsResult">
+        <include refid="selectProcessContractsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertProcessContracts" parameterType="ProcessContracts" useGeneratedKeys="true" keyProperty="id">
+        insert into process_contracts
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contractType != null">contract_type,</if>
+            <if test="provider != null">provider,</if>
+            <if test="startDate != null">start_date,</if>
+            <if test="endDate != null">end_date,</if>
+            <if test="detail != null">detail,</if>
+            <if test="comments != null">comments,</if>
+            <if test="departmentId != null">department_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contractType != null">#{contractType},</if>
+            <if test="provider != null">#{provider},</if>
+            <if test="startDate != null">#{startDate},</if>
+            <if test="endDate != null">#{endDate},</if>
+            <if test="detail != null">#{detail},</if>
+            <if test="comments != null">#{comments},</if>
+            <if test="departmentId != null">#{departmentId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProcessContracts" parameterType="ProcessContracts">
+        update process_contracts
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractType != null">contract_type = #{contractType},</if>
+            <if test="provider != null">provider = #{provider},</if>
+            <if test="startDate != null">start_date = #{startDate},</if>
+            <if test="endDate != null">end_date = #{endDate},</if>
+            <if test="detail != null">detail = #{detail},</if>
+            <if test="comments != null">comments = #{comments},</if>
+            <if test="departmentId != null">department_id = #{departmentId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProcessContractsById" parameterType="Long">
+        delete from process_contracts where id = #{id}
+    </delete>
+
+    <delete id="deleteProcessContractsByIds" parameterType="String">
+        delete from process_contracts where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
