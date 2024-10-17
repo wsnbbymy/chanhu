@@ -44,8 +44,8 @@ public class ProcessClientInfoController extends BaseController
     public TableDataInfo list(ProcessClientInfo processClientInfo)
     {
         startPage();
-//        List<ProcessClientInfo> list = processClientInfoService.selectProcessClientInfoList(processClientInfo);
-        List<ProcessClientInfoDto> list = processClientInfoService.selectProcessClientInfoListAndDepartments(processClientInfo);
+        List<ProcessClientInfo> list = processClientInfoService.selectProcessClientInfoList(processClientInfo);
+//        List<ProcessClientInfoDto> list = processClientInfoService.selectProcessClientInfoListAndDepartments(processClientInfo);
         return getDataTable(list);
     }
 
