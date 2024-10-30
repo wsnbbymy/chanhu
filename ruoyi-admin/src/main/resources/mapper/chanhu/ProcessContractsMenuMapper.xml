@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.chanhu.mapper.ProcessContractsMenuMapper">
+    <resultMap id="ProcessContractsMenuResultMap" type="com.ruoyi.chanhu.domain.ProcessContractsMenu">
+        <id property="id" column="id"/>
+        <result property="label" column="label"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="menuIndex" column="menu_index"/>
+    </resultMap>
+
+    <select id="getAllMenuItems" resultMap="ProcessContractsMenuResultMap">
+        SELECT * FROM process_contracts_menu
+    </select>
+
+    <select id="getMenuItemsByParentId" parameterType="int" resultMap="ProcessContractsMenuResultMap">
+        SELECT * FROM process_contracts_menu WHERE parent_id = #{parentId}
+    </select>
+</mapper>
