@@ -17,4 +17,65 @@
     <select id="getMenuItemsByParentId" parameterType="int" resultMap="ProcessContractsMenuResultMap">
         SELECT * FROM process_contracts_menu WHERE parent_id = #{parentId}
     </select>
+
+    <resultMap type="ProcessContractsMenu" id="ProcessContractsMenuResult">
+        <result property="id"    column="id"    />
+        <result property="label"    column="label"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="menuIndex"    column="menu_index"    />
+    </resultMap>
+
+    <sql id="selectProcessContractsMenuVo">
+        select id, label, parent_id, menu_index from process_contracts_menu
+    </sql>
+
+    <select id="selectProcessContractsMenuList" parameterType="ProcessContractsMenu" resultMap="ProcessContractsMenuResult">
+        <include refid="selectProcessContractsMenuVo"/>
+        <where>
+            <if test="id != null "> and id = #{id}</if>
+            <if test="label != null  and label != ''"> and label = #{label}</if>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="menuIndex != null  and menuIndex != ''"> and menu_index = #{menuIndex}</if>
+        </where>
+    </select>
+
+    <select id="selectProcessContractsMenuById" parameterType="Long" resultMap="ProcessContractsMenuResult">
+        <include refid="selectProcessContractsMenuVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertProcessContractsMenu" parameterType="ProcessContractsMenu" useGeneratedKeys="true" keyProperty="id">
+        insert into process_contracts_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="label != null and label != ''">label,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="menuIndex != null and menuIndex != ''">menu_index,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="label != null and label != ''">#{label},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="menuIndex != null and menuIndex != ''">#{menuIndex},</if>
+        </trim>
+    </insert>
+
+    <update id="updateProcessContractsMenu" parameterType="ProcessContractsMenu">
+        update process_contracts_menu
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="label != null and label != ''">label = #{label},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="menuIndex != null and menuIndex != ''">menu_index = #{menuIndex},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProcessContractsMenuById" parameterType="Long">
+        delete from process_contracts_menu where id = #{id}
+    </delete>
+
+    <delete id="deleteProcessContractsMenuByIds" parameterType="String">
+        delete from process_contracts_menu where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>
