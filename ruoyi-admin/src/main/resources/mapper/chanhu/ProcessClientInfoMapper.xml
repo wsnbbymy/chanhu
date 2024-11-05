@@ -12,6 +12,13 @@
         <result property="comments"    column="comments"    />
     </resultMap>
 
+    <resultMap type="Operator" id="operatorsInfo">
+        <result property="id"    column="id"    />
+        <result property="operatorName"    column="operator_name"    />
+        <result property="industry"    column="industry"    />
+        <result property="comments"    column="comments"    />
+    </resultMap>
+
     <sql id="selectProcessClientInfoVo">
         select id, client_name, employer_num, industry, comments from process_client_info
     </sql>
@@ -68,4 +75,37 @@
             #{id}
         </foreach>
     </delete>
+
+    <select id="getOperators" resultMap="operatorsInfo">
+        select * from operators_info
+    </select>
+
+    <select id="getOperatorsById" resultMap="operatorsInfo" parameterType="Integer">
+        <include refid="getOperators"></include>
+        where id = #{id}
+    </select>
+
+    <insert id="createOperator" parameterType="com.ruoyi.chanhu.domain.Operator">
+        insert into operators_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="operatorName != null and operatorName != ''">operator_name,</if>
+            <if test="industry != null">industry,</if>
+            <if test="comments != null">comments,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="operatorName != null and operatorName != ''">#{operatorName},</if>
+            <if test="industry != null">#{industry},</if>
+            <if test="comments != null">#{comments},</if>
+        </trim>
+    </insert>
+
+    <update id="updateOperator" parameterType="com.ruoyi.chanhu.domain.Operator">
+        update operators_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="operatorName != null and operatorName != ''">operator_name = #{operatorName},</if>
+            <if test="industry != null">industry = #{industry},</if>
+            <if test="comments != null">comments = #{comments},</if>
+        </trim>
+        where id = #{id}
+    </update>
 </mapper>

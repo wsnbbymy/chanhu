@@ -1,27 +1,22 @@
 package com.ruoyi.chanhu.controller;
 
-import java.util.List;
-import javax.servlet.http.HttpServletResponse;
-
-import com.ruoyi.chanhu.domain.dto.ProcessClientInfoDto;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.ruoyi.chanhu.domain.Operator;
+import com.ruoyi.chanhu.domain.ProcessClientInfo;
+import com.ruoyi.chanhu.service.IProcessClientInfoService;
+import com.ruoyi.chanhu.service.ProcessExtraService;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.chanhu.domain.ProcessClientInfo;
-import com.ruoyi.chanhu.service.IProcessClientInfoService;
-import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * 客户信息Controller
@@ -35,6 +30,9 @@ public class ProcessClientInfoController extends BaseController
 {
     @Autowired
     private IProcessClientInfoService processClientInfoService;
+
+    @Resource
+    private ProcessExtraService processExtraService;
 
     /**
      * 查询客户信息列表
@@ -103,5 +101,46 @@ public class ProcessClientInfoController extends BaseController
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(processClientInfoService.deleteProcessClientInfoByIds(ids));
+    }
+
+    /**
+     *  查询业务字段
+     */
+    @GetMapping("/getTableConfig")
+    public AjaxResult getTableConfig(){
+
+
+
+        return toAjax(true);
+    }
+
+    /**
+     *  查询供应商字典
+     */
+    @GetMapping("/getOperators")
+    public AjaxResult getOperators(@RequestParam("id") Integer id){
+        return success(processExtraService.getOperators(id));
+    }
+
+
+    /**
+     *  查询供应商字典
+     */
+    @PostMapping("/createOperators")
+    public AjaxResult createOperator(@RequestBody Operator operator){
+        processExtraService.createOperator(operator);
+        return success();
+    }
+
+    @PostMapping("/updateOperators")
+    public AjaxResult updateOperators(@RequestBody Operator operator){
+        processExtraService.updateOperator(operator);
+        return success();
+    }
+
+    @PostMapping("/deleteOperators")
+    public AjaxResult deleteOperators(@RequestBody Operator operator){
+        processExtraService.updateOperator(operator);
+        return success();
     }
 }

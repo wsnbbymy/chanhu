@@ -1,6 +1,8 @@
 package com.ruoyi.chanhu.mapper;
 
 import java.util.List;
+
+import com.ruoyi.chanhu.domain.Operator;
 import com.ruoyi.chanhu.domain.ProcessClientInfo;
 
 /**
@@ -58,4 +60,13 @@ public interface ProcessClientInfoMapper
      * @return 结果
      */
     public int deleteProcessClientInfoByIds(Long[] ids);
+
+
+    public List<Operator> getOperators();
+
+    public List<Operator> getOperatorsById(Integer id);
+
+    public void createOperator(Operator operator);
+
+    public void updateOperator(Operator operator);
 }
