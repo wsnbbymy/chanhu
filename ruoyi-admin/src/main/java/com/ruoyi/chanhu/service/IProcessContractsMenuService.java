@@ -5,7 +5,7 @@ import com.ruoyi.chanhu.domain.ProcessContractsMenu;
 import java.util.List;
 
 public interface IProcessContractsMenuService {
-    List<ProcessContractsMenu> buildTree(List<ProcessContractsMenu> allItems);
+    List<ProcessContractsMenu> buildTree(Integer unitId,List<ProcessContractsMenu> allItems);
 
     List<ProcessContractsMenu> getAllMenuItems();
 

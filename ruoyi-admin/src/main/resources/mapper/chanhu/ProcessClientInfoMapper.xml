@@ -19,8 +19,18 @@
         <result property="comments"    column="comments"    />
     </resultMap>
 
+    <resultMap type="ProcessContractsConfig" id="contractsConfig">
+        <result property="id"    column="id"    />
+        <result property="pid"    column="pid"    />
+        <result property="keyName"    column="key_name"    />
+        <result property="type"    column="type"    />
+        <result property="rules"    column="rules"    />
+        <result property="required"    column="required"    />
+        <result property="hint"    column="hint"    />
+    </resultMap>
+
     <sql id="selectProcessClientInfoVo">
-        select id, client_name, employer_num, industry, comments from process_client_info
+        select id, client_name, employer_num, industry, comments, create_by from process_client_info
     </sql>
 
     <select id="selectProcessClientInfoList" parameterType="ProcessClientInfo" resultMap="ProcessClientInfoResult">
@@ -30,6 +40,7 @@
             <if test="employerNum != null "> and employer_num = #{employerNum}</if>
             <if test="industry != null  and industry != ''"> and industry like concat('%', #{industry}, '%')</if>
             <if test="comments != null  and comments != ''"> and comments like concat('%', #{comments}, '%')</if>
+            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
         </where>
     </select>
 
@@ -45,12 +56,14 @@
             <if test="employerNum != null">employer_num,</if>
             <if test="industry != null">industry,</if>
             <if test="comments != null">comments,</if>
+            <if test="createBy != null">create_by,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="clientName != null and clientName != ''">#{clientName},</if>
             <if test="employerNum != null">#{employerNum},</if>
             <if test="industry != null">#{industry},</if>
             <if test="comments != null">#{comments},</if>
+            <if test="createBy != null">#{createBy},</if>
         </trim>
     </insert>
 
@@ -81,7 +94,7 @@
     </select>
 
     <select id="getOperatorsById" resultMap="operatorsInfo" parameterType="Integer">
-        <include refid="getOperators"></include>
+        select * from operators_info
         where id = #{id}
     </select>
 
@@ -108,4 +121,32 @@
         </trim>
         where id = #{id}
     </update>
+
+    <insert id="createProcessContractsConfig" parameterType="com.ruoyi.chanhu.domain.ProcessContractsConfig">
+        insert into process_contracts_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pid != null and pid != ''">pid,</if>
+            <if test="keyName != null and keyName != ''">key_name,</if>
+            <if test="type != null and type != '' ">`type`,</if>
+            <if test="rules != null and rules != '' ">rules,</if>
+            <if test="required != null and required != '' ">required,</if>
+            <if test="hint != null and hint != '' ">hint</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pid != null and pid != ''">#{pid},</if>
+            <if test="keyName != null and keyName != ''">#{keyName},</if>
+            <if test="type != null and type != '' ">#{type},</if>
+            <if test="rules != null and rules != '' ">#{rules},</if>
+            <if test="required != null and required != '' ">#{required},</if>
+            <if test="hint != null and hint != '' ">#{hint}</if>
+        </trim>
+    </insert>
+
+    <select id="getProcessConfigByid" parameterType="java.lang.Long" resultMap="contractsConfig">
+        select * from process_contracts_config where pid = #{id}
+    </select>
+
+    <delete id="delProcessConfigByid" parameterType="java.lang.Long">
+        delete from process_contracts_config where id = #{id}
+    </delete>
 </mapper>

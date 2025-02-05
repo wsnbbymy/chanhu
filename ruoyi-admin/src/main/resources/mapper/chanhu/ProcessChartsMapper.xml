@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.chanhu.mapper.ProcessChartsMapper">
+
+    <select id="entry" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(1) from
+        chanhu.process_contracts
+        where
+        create_by = #{createBy}
+        <if test="createStartTime != null">
+            and create_time >= #{createStartTime}
+        </if>
+        <if test="createEndTime != null">
+            and create_time &lt;= #{createEndTime}
+        </if>
+    </select>
+
+
+    <select id="fillStatus" parameterType="java.lang.String" resultType="java.util.Map">
+        select operator.operator_name,count(a.id) as count
+        from (select * from process_contracts contracts
+        <if test="createBy != null">
+            where create_by = #{createBy}
+        </if>
+        ) a right join operators_info operator on a.provider = operator.id
+        group by operator.operator_name
+    </select>
+
+    <select id="processStatus" parameterType="java.lang.String" resultType="java.util.Map">
+        select count(contracts.id) as count,menu.label
+        from (select * from process_contracts where
+        <if test="createBy != null">
+            create_by = #{createBy}
+        </if>
+        ) contracts right join (select * from process_contracts_menu where parent_id is null) menu on menu.id = contracts.contract_type
+        group by contract_type,menu.label
+    </select>
+
+    <select id="countdown" parameterType="java.lang.String" resultType="java.util.Map">
+        select contracts.id,menu.label as b1,menu2.label as b3,menu3.label as b2,contracts.end_date,client.client_name from
+            process_contracts contracts
+        left join process_contracts_menu menu on menu.id = contracts.contract_type
+        left join process_contracts_menu menu2 on menu2.id = contracts.process_id
+        left join process_contracts_menu menu3 on menu3.id = menu2.parent_id
+        left join process_client_info client on client.id = contracts.unit_id
+        where contracts.create_by = #{createBy}
+        and
+        contracts.end_date is not null
+        order by contracts.end_date limit 4
+    </select>
+</mapper>

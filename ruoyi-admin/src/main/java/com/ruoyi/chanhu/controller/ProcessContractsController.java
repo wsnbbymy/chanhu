@@ -1,17 +1,13 @@
 package com.ruoyi.chanhu.controller;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -29,6 +25,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  */
 @RestController
 @RequestMapping("/chanhu/contracts")
+@Log4j2
 public class ProcessContractsController extends BaseController
 {
     @Autowired
@@ -70,6 +67,16 @@ public class ProcessContractsController extends BaseController
     }
 
     /**
+     * 获取信息-uid+id
+     */
+    @PreAuthorize("@ss.hasPermi('chanhu:contracts:query')")
+    @GetMapping(value = "/getInfoByProcessId")
+    public AjaxResult getInfoByProcessId(@RequestParam("id") Long id,@RequestParam("clientId") Long clientId)
+    {
+        return success(processContractsService.selectProcessContractsByIdAndUid(id,clientId));
+    }
+
+    /**
      * 新增合同管理
      */
     @PreAuthorize("@ss.hasPermi('chanhu:contracts:add')")
@@ -77,7 +84,13 @@ public class ProcessContractsController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody ProcessContracts processContracts)
     {
-        return toAjax(processContractsService.insertProcessContracts(processContracts));
+        try{
+            processContractsService.insertProcessContracts(processContracts);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return new AjaxResult(400,"业务代码重复");
+        }
+        return toAjax(true);
     }
 
     /**
@@ -100,5 +113,16 @@ public class ProcessContractsController extends BaseController
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(processContractsService.deleteProcessContractsByIds(ids));
+    }
+
+    /**
+     * 删除合同管理
+     */
+    @Log(title = "更新数据->contractType", businessType = BusinessType.DELETE)
+    @GetMapping("/updateContractType")
+    public AjaxResult updateContractType()
+    {
+        processContractsService.updateContractType();
+        return new AjaxResult(200,"success");
     }
 }

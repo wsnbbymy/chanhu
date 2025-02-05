@@ -22,9 +22,9 @@ public class ProcessContractsMenuController extends BaseController {
     private IProcessContractsMenuService processContractsMenuService;
 
     @GetMapping("/menu")
-    public List<ProcessContractsMenu> getMenuItems() {
+    public List<ProcessContractsMenu> getMenuItems(@RequestParam("unitId") Integer unitId) {
         List<ProcessContractsMenu> allItems = processContractsMenuService.getAllMenuItems();
-        List<ProcessContractsMenu> processContractsMenus = processContractsMenuService.buildTree(allItems);
+        List<ProcessContractsMenu> processContractsMenus = processContractsMenuService.buildTree(unitId,allItems);
         return processContractsMenus;
     }
 

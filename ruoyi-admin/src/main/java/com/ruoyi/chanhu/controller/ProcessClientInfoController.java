@@ -2,6 +2,7 @@ package com.ruoyi.chanhu.controller;
 
 import com.ruoyi.chanhu.domain.Operator;
 import com.ruoyi.chanhu.domain.ProcessClientInfo;
+import com.ruoyi.chanhu.domain.ProcessContractsConfig;
 import com.ruoyi.chanhu.service.IProcessClientInfoService;
 import com.ruoyi.chanhu.service.ProcessExtraService;
 import com.ruoyi.common.annotation.Log;
@@ -9,6 +10,8 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,6 +45,7 @@ public class ProcessClientInfoController extends BaseController
     public TableDataInfo list(ProcessClientInfo processClientInfo)
     {
         startPage();
+        processClientInfo.setCreateBy(SecurityUtils.getLoginUser().getUser().getUserId().toString());
         List<ProcessClientInfo> list = processClientInfoService.selectProcessClientInfoList(processClientInfo);
 //        List<ProcessClientInfoDto> list = processClientInfoService.selectProcessClientInfoListAndDepartments(processClientInfo);
         return getDataTable(list);
@@ -78,6 +82,7 @@ public class ProcessClientInfoController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody ProcessClientInfo processClientInfo)
     {
+        processClientInfo.setCreateBy(SecurityUtils.getLoginUser().getUser().getUserId().toString());
         return toAjax(processClientInfoService.insertProcessClientInfo(processClientInfo));
     }
 
@@ -143,4 +148,34 @@ public class ProcessClientInfoController extends BaseController
         processExtraService.updateOperator(operator);
         return success();
     }
+
+    /**
+     *
+     */
+    @GetMapping("/getProcessConfigByid")
+    public AjaxResult getProcessConfigByid(@RequestParam("id") Long id){
+        return success(processExtraService.getProcessConfigByid(id));
+    }
+
+    /**
+     *
+     */
+    @PostMapping("/createProcessConfig")
+    public AjaxResult createProcessConfig(@RequestBody ProcessContractsConfig config){
+        if (StringUtils.isEmpty(config.getKeyName()) || config.getType() == null){
+            return error("请填写完整配置！");
+        }
+        processExtraService.createProcessContractsConfig(config);
+        return success();
+    }
+
+    @GetMapping("/delProcessConfigByid")
+    public AjaxResult delProcessConfigByid(@RequestParam("id") Long id){
+        if (id == null){
+            return error("无id！");
+        }
+        processExtraService.delProcessConfigByid(id);
+        return success();
+    }
+
 }

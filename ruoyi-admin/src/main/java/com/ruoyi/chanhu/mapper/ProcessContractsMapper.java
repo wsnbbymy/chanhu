@@ -2,6 +2,9 @@ package com.ruoyi.chanhu.mapper;
 
 import java.util.List;
 import com.ruoyi.chanhu.domain.ProcessContracts;
+import io.swagger.models.auth.In;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * 合同管理Mapper接口
@@ -9,15 +12,19 @@ import com.ruoyi.chanhu.domain.ProcessContracts;
  * @author mingyuan
  * @date 2024-10-16
  */
-public interface ProcessContractsMapper 
+public interface ProcessContractsMapper
 {
     /**
      * 查询合同管理
-     * 
+     *
      * @param id 合同管理主键
      * @return 合同管理
      */
     public ProcessContracts selectProcessContractsById(Long id);
+
+    public ProcessContracts selectProcessContractsByIdAndUid(@Param("id") Long id, @Param("clientId") Long clientId);
+
+    public ProcessContracts selectProcessContractsForRecord(@Param("unitId") Integer unitId,@Param("processId") Integer processId,@Param("departmentId") Integer departmentId);
 
     /**
      * 查询合同管理列表
@@ -58,4 +65,6 @@ public interface ProcessContractsMapper
      * @return 结果
      */
     public int deleteProcessContractsByIds(Long[] ids);
+
+    public Long getContractType(Long id);
 }

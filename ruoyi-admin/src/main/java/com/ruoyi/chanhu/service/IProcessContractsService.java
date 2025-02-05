@@ -2,6 +2,8 @@ package com.ruoyi.chanhu.service;
 
 import java.util.List;
 import com.ruoyi.chanhu.domain.ProcessContracts;
+import com.ruoyi.common.core.domain.AjaxResult;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * 合同管理Service接口
@@ -19,6 +21,7 @@ public interface IProcessContractsService
      */
     public ProcessContracts selectProcessContractsById(Long id);
 
+    public ProcessContracts selectProcessContractsByIdAndUid(Long id, Long clientId);
     /**
      * 查询合同管理列表
      * 
@@ -58,4 +61,6 @@ public interface IProcessContractsService
      * @return 结果
      */
     public int deleteProcessContractsById(Long id);
+
+    public void updateContractType();
 }

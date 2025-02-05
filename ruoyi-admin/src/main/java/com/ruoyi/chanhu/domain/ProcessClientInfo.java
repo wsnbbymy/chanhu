@@ -34,7 +34,7 @@ public class ProcessClientInfo extends BaseEntity
     @Excel(name = "备注")
     private String comments;
 
-    public void setId(Long id) 
+    public void setId(Long id)
     {
         this.id = id;
     }

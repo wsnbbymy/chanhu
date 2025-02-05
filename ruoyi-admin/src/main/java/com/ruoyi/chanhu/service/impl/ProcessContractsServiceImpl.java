@@ -1,11 +1,15 @@
 package com.ruoyi.chanhu.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.chanhu.mapper.ProcessContractsMapper;
 import com.ruoyi.chanhu.domain.ProcessContracts;
 import com.ruoyi.chanhu.service.IProcessContractsService;
+
+import javax.annotation.Resource;
 
 /**
  * 合同管理Service业务层处理
@@ -16,7 +20,7 @@ import com.ruoyi.chanhu.service.IProcessContractsService;
 @Service
 public class ProcessContractsServiceImpl implements IProcessContractsService 
 {
-    @Autowired
+    @Resource
     private ProcessContractsMapper processContractsMapper;
 
     /**
@@ -31,6 +35,11 @@ public class ProcessContractsServiceImpl implements IProcessContractsService
         return processContractsMapper.selectProcessContractsById(id);
     }
 
+    public ProcessContracts selectProcessContractsByIdAndUid(Long id,Long clientId)
+    {
+        return processContractsMapper.selectProcessContractsByIdAndUid(id,clientId);
+    }
+
     /**
      * 查询合同管理列表
      * 
@@ -40,6 +49,7 @@ public class ProcessContractsServiceImpl implements IProcessContractsService
     @Override
     public List<ProcessContracts> selectProcessContractsList(ProcessContracts processContracts)
     {
+        processContracts.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
         return processContractsMapper.selectProcessContractsList(processContracts);
     }
 
@@ -52,6 +62,9 @@ public class ProcessContractsServiceImpl implements IProcessContractsService
     @Override
     public int insertProcessContracts(ProcessContracts processContracts)
     {
+        processContracts.setDraft(Boolean.TRUE);
+        processContracts.setCreateBy(SecurityUtils.getLoginUser().getUserId().toString());
+        processContracts.setContractType(processContractsMapper.getContractType(processContracts.getProcessId()));
         return processContractsMapper.insertProcessContracts(processContracts);
     }
 
@@ -64,6 +77,7 @@ public class ProcessContractsServiceImpl implements IProcessContractsService
     @Override
     public int updateProcessContracts(ProcessContracts processContracts)
     {
+        processContracts.setContractType(processContractsMapper.getContractType(processContracts.getProcessId()));
         return processContractsMapper.updateProcessContracts(processContracts);
     }
 
@@ -89,5 +103,13 @@ public class ProcessContractsServiceImpl implements IProcessContractsService
     public int deleteProcessContractsById(Long id)
     {
         return processContractsMapper.deleteProcessContractsById(id);
+    }
+
+    @Override
+    public void updateContractType() {
+        List<ProcessContracts> processContracts = processContractsMapper.selectProcessContractsList(new ProcessContracts());
+        for(ProcessContracts item : processContracts){
+            this.updateProcessContracts(item);
+        }
     }
 }

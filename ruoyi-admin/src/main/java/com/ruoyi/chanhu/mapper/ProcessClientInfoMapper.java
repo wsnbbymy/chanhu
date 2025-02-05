@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.ruoyi.chanhu.domain.Operator;
 import com.ruoyi.chanhu.domain.ProcessClientInfo;
+import com.ruoyi.chanhu.domain.ProcessContractsConfig;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 客户信息Mapper接口
@@ -69,4 +71,10 @@ public interface ProcessClientInfoMapper
     public void createOperator(Operator operator);
 
     public void updateOperator(Operator operator);
+
+    public void createProcessContractsConfig(ProcessContractsConfig config);
+
+    public List<ProcessContractsConfig> getProcessConfigByid(@Param("id") Long id);
+
+    public void delProcessConfigByid(@Param("id") Long id);
 }

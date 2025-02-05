@@ -13,50 +13,76 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="detail"    column="detail"    />
         <result property="comments"    column="comments"    />
         <result property="departmentId"    column="department_id"    />
+        <result property="processCode"    column="process_code"    />
+        <result property="processId"    column="process_id"    />
+        <result property="clientName"    column="client_name"    />
+        <result property="processName"    column="label"    />
     </resultMap>
 
     <sql id="selectProcessContractsVo">
-        select id, contract_type, provider, start_date, end_date, detail, comments, department_id from process_contracts
+        select contracts.id, contracts.contract_type, contracts.provider, contracts.start_date, contracts.end_date, contracts.detail, contracts.process_id, contracts.process_code, contracts.comments, contracts.department_id,
+               info.client_name,menu.label
+        from process_contracts contracts
+        left join process_client_info info on contracts.unit_id = info.id
+        left join process_contracts_menu menu on contracts.process_id = menu.id
     </sql>
 
     <select id="selectProcessContractsList" parameterType="ProcessContracts" resultMap="ProcessContractsResult">
         <include refid="selectProcessContractsVo"/>
         <where>  
-            <if test="contractType != null "> and contract_type = #{contractType}</if>
-            <if test="provider != null "> and provider = #{provider}</if>
-            <if test="startDate != null "> and start_date = #{startDate}</if>
-            <if test="endDate != null "> and end_date = #{endDate}</if>
-            <if test="detail != null  and detail != ''"> and detail = #{detail}</if>
-            <if test="comments != null  and comments != ''"> and comments = #{comments}</if>
-            <if test="departmentId != null "> and department_id = #{departmentId}</if>
+            <if test="contractType != null "> and contracts.contract_type = #{contractType}</if>
+            <if test="provider != null "> and contracts.provider = #{provider}</if>
+            <if test="startDate != null "> and contracts.start_date = #{startDate}</if>
+            <if test="endDate != null "> and contracts.end_date = #{endDate}</if>
+            <if test="detail != null  and detail != ''"> and contracts.detail = #{detail}</if>
+            <if test="comments != null  and comments != ''"> and contracts.comments = #{comments}</if>
+            <if test="departmentId != null "> and contracts.department_id = #{departmentId}</if>
+            <if test="createBy != null "> and contracts.create_by = #{createBy}</if>
+            <if test="processName != null "> and menu.label like concat('%',#{processName},'%')</if>
+            <if test="clientName != null "> and info.client_name like concat('%',#{clientName},'%')</if>
         </where>
     </select>
     
     <select id="selectProcessContractsById" parameterType="Long" resultMap="ProcessContractsResult">
         <include refid="selectProcessContractsVo"/>
-        where id = #{id}
+        where contracts.id = #{id}
+    </select>
+
+    <select id="selectProcessContractsByIdAndUid" parameterType="Long" resultMap="ProcessContractsResult">
+        <include refid="selectProcessContractsVo"/>
+        where contracts.process_id = #{id} and contracts.unit_id = #{clientId}
     </select>
 
     <insert id="insertProcessContracts" parameterType="ProcessContracts" useGeneratedKeys="true" keyProperty="id">
         insert into process_contracts
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="contractType != null">contract_type,</if>
+            <if test="processCode != null">process_code,</if>
             <if test="provider != null">provider,</if>
             <if test="startDate != null">start_date,</if>
             <if test="endDate != null">end_date,</if>
             <if test="detail != null">detail,</if>
             <if test="comments != null">comments,</if>
             <if test="departmentId != null">department_id,</if>
+            <if test="processId != null">process_id,</if>
+            <if test="unitId != null">unit_id,</if>
+            <if test="isDraft != null">is_draft,</if>
+            <if test="createBy != null">create_by,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="contractType != null">#{contractType},</if>
+            <if test="processCode != null">#{processCode},</if>
             <if test="provider != null">#{provider},</if>
             <if test="startDate != null">#{startDate},</if>
             <if test="endDate != null">#{endDate},</if>
             <if test="detail != null">#{detail},</if>
             <if test="comments != null">#{comments},</if>
             <if test="departmentId != null">#{departmentId},</if>
-         </trim>
+            <if test="processId != null">#{processId},</if>
+            <if test="unitId != null">#{unitId},</if>
+            <if test="isDraft != null">#{isDraft},</if>
+            <if test="createBy != null">#{createBy},</if>
+        </trim>
     </insert>
 
     <update id="updateProcessContracts" parameterType="ProcessContracts">
@@ -83,4 +109,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <select id="selectProcessContractsForRecord" parameterType="java.lang.String" resultMap="ProcessContractsResult">
+        select * from process_contracts
+        where
+        process_id = #{processId}
+        and
+        unit_id = #{unitId}
+        <if test="departmentId != null">
+            and department_id = #{departmentId}
+        </if>
+
+    </select>
+
+
+    <select id="getContractType" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select parent_id
+        from
+        process_contracts_menu
+        where
+        id = (select parent_id from process_contracts_menu where id = #{processId})
+    </select>
 </mapper>

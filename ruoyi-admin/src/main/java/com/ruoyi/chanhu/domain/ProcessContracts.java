@@ -24,6 +24,10 @@ public class ProcessContracts extends BaseEntity
     @Excel(name = "合同类型/业务类型")
     private Long contractType;
 
+    /** 业务编号 */
+    @Excel(name = "业务编号")
+    private String processCode;
+
     /** 供应商类型：1-联通 2-移动 3-电信 4-广电 */
     @Excel(name = "供应商类型：1-联通 2-移动 3-电信 4-广电")
     private Long provider;
@@ -50,7 +54,59 @@ public class ProcessContracts extends BaseEntity
     @Excel(name = "部门id")
     private Long departmentId;
 
-    public void setId(Long id) 
+    @Excel(name = "客户单位名称")
+    private String clientName;
+
+    @Excel(name = "业务名称")
+    private String processName;
+
+    private Long processId;
+
+    private Long unitId;
+
+    private Boolean isDraft;
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    public String getProcessName() {
+        return processName;
+    }
+
+    public void setProcessName(String processName) {
+        this.processName = processName;
+    }
+
+    public Long getUnitId() {
+        return unitId;
+    }
+
+    public void setUnitId(Long unitId) {
+        this.unitId = unitId;
+    }
+
+    public Boolean getDraft() {
+        return isDraft;
+    }
+
+    public void setDraft(Boolean draft) {
+        isDraft = draft;
+    }
+
+    public Long getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(Long processId) {
+        this.processId = processId;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }
@@ -121,6 +177,14 @@ public class ProcessContracts extends BaseEntity
     public Long getDepartmentId() 
     {
         return departmentId;
+    }
+
+    public String getProcessCode() {
+        return processCode;
+    }
+
+    public void setProcessCode(String processCode) {
+        this.processCode = processCode;
     }
 
     @Override

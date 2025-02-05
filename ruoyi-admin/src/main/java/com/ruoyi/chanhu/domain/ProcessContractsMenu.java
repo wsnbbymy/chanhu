@@ -11,5 +11,8 @@ public class ProcessContractsMenu extends BaseEntity {
     private String label;
     private Integer parentId;
     private String menuIndex;
+    private Boolean isRoot = Boolean.FALSE;
     private List<ProcessContractsMenu> children;
+    private ProcessContracts processContracts;
+    private Integer fillFlag;
 }
